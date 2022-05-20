@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <link rel = "stylesheet" href="style.css">
+
+    <title>fluffybonnie</title>
+
+    <meta property="og:title" content="fluffybonnie"/>
+    <meta property="og:description" content="사람을 무는 마법의 카펫!"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimage.jpeg') }}"/>
+
+    <script src="https://kit.fontawesome.com/b14f819a4f.js" crossorigin="anonymous"></script>
+    <script scr="main.js" defer></script>
+
+
+
+    <style>
+
+        * {
+            font-family: 'Jua', sans-serif;
+        }
+
+        .carpet{
+
+            width: 600px;
+            height: 450px;
+            margin: 0 auto 30px auto;
+
+            background-image:url("../static/carpet.jpeg");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .price{
+            font-size: 20px;
+        }
+
+        .btn{
+            width: 100px;
+            margin: auto;
+            margin-bottom: 50px;
+            display: block;
+        }
+
+        .wrap{
+            width: 600px;
+            margin: auto;
+        }
+
+        .table{
+            width: 600px;
+            margin: auto;
+        }
+
+        .currency {
+            color: blue;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .navbar {
+            display: flex;
+            /* #중간중간에 spacing넣기 */
+            justify-content: space-between;
+            align-items: center;
+            background-color: midnightblue;
+            padding: 8px 12px;
+        }
+
+        a {
+            text-decoration: none;
+/*             글자색깔을 하얗게*/
+            color: white;
+        }
+
+        .navbar_logo{
+            font-size: 24px;
+            color: white;
+        }
+
+        .navbar_menu{
+/*            안에 있는 리스트들을 한줄에 나란히 놓기*/
+            display: flex;
+
+/*            list들 앞에 붙는 점들 사라지게 하기 */
+            list-style: none;
+            padding: 12px 8px 4px 0px;
+        }
+
+/*        메뉴안에 있는 아이템들이 너무 따닥따닥붙어있기 떄문에 spacing 넣어서 간격 맞추기 */
+        .navbar_menu li{
+            padding: 8px  12px;
+        }
+
+/*        마우스가 메뉴 위에 올라왔을때 생기는 뒷배경*/
+        .navbar_menu li:hover {
+            background-color: #d49466;
+            border-radius: 4px;
+        }
+
+        .navbar_icon {
+            list-style: none;
+            color: white;
+            display: flex;
+            padding: 12px 8px 4px 0px;
+        }
+
+        .navbar_icon li {
+            padding: 8px 12px;
+        }
+
+        .navbar_toogleBtn{
+            display: none;
+            position: absolute;
+            right: 32px;
+            font-size: 24px;
+            color: white;
+        }
+
+
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+            }
+
+            .navbar_menu {
+                flex-direction: column;
+            }
+
+            .navbar_menu li {
+                width: 100%;
+                text-align: center;
+            }
+
+            navbar_icons {
+                display: none;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .navbar_toogleBtn {
+                display: block;
+            }
+
+            .navbar_menu.active,
+            .navbar_icon.active {
+                display: flex;
+            }
+        }
+
+
+
+    </style>
+
+        <script>
+            $(document).ready(function () {
+            get_rate();
+            listing();
+        });
+
+        function listing() {
+            $.ajax({
+                type: "GET",
+                url: "/order",
+                data: {},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        let orders = response['orders'];
+                        for (let i = 0; i < orders.length; i++) {
+                            let name = orders[i]['name'];
+                            let count = orders[i]['count'];
+                            let address = orders[i]['address'];
+                            let phone = orders[i]['phone'];
+
+                            let temp_html = `<tr>
+                                                <th scope="row">${name}</th>
+                                                <td>${count}</td>
+                                                <td>${address}</td>
+                                                <td>${phone}</td>
+                                            </tr>`
+                            $('#orders-box').append(temp_html)
+                        }
+                    }
+                }
+            })
+        }
+
+        function get_rate() {
+            $.ajax({
+                type: "GET",
+                url: "https://api.manana.kr/exchange/rate.json",
+                data: {},
+                success: function (response) {
+                    let rate = response[1]['rate'];
+                    $('#rate').text(rate);
+                }
+            })
+        }
+
+        function order() {
+            let name = $('#order-name').val();
+            let count = $('#order-count').val();
+            let address = $('#order-address').val();
+            let phone = $('#order-phone').val();
+
+            $.ajax({
+                type: "POST",
+                url: "/order",
+                data: {name_give: name, count_give: count, address_give: address, phone_give: phone},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert(response["msg"]);
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+
+        </script>
+</head>
+
+<body>
+
+    <nav class = "navbar">
+        <div class="navbar_logo">
+            <i class="fa-solid fa-paw"></i>
+            <a href="http://fluffybonnie.shop/">FluffyBonnie</a>
+        </div>
+
+        <ul class = "navbar_menu">
+            <li><a href="">Home</a></li>
+            <li><a href="">Gallery</a></li>
+            <li><a href="">About</a></li>
+            <li><a href="">Contact</a></li>
+        </ul>
+
+        <ul class ="navbar_icon">
+            <li><i class="fa-brands fa-facebook"></i></li>
+        </ul>
+
+        <a href="#" class="navbar_toogleBtn">
+            <i class="fa-solid fa-bars"></i>
+        </a>
+    </nav>
+
+
+<div class="wrap">
+    <div class = "carpet"></div>
+
+    <h1>카펫을 팝니다!<span class="price">가격: 10000000000000원/댕</span></h1>
+    <p>이 카펫은 사실 특별한 힘을 가지고 있어요. 카펫이 좋아하는 간식을 들고 소원을 빌면 :D! 짜자잔 간식이 사라진 답니다. 하나 들이세요! 카펫샴푸 향이 아주 좋아요</p>
+
+    <p class = "currency">달러-원 환율: <span id="rate"></span> </p>
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text">주문자이름</span>
+        </div>
+        <input id="order-name"  type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    </div>
+
+    <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text">수량</label>
+            </div>
+            <select id="order-count" class="custom-select">
+                <option selected>--수량을 선택하세요--</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </div>
+
+        <div class="form">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">주소</span>
+                </div>
+                <input id="order-address" type="text" class="form-control" aria-label="Default"
+                       aria-describedby="inputGroup-sizing-default">
+            </div>
+        </div>
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text">전화번호</span>
+        </div>
+        <input id="order-phone" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    </div>
+
+        <input class="btn btn-primary" type="button" onclick="order()" value="주문하기">
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">이름</th>
+            <th scope="col">수량</th>
+            <th scope="col">주소</th>
+            <th scope="col">전화번호</th>
+        </tr>
+        </thead>
+        <tbody id="orders-box">
+        </tbody>
+    </table>
+
+    </div>
+
+</div>
+</body>
+
+</html>
